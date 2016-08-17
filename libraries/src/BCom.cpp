@@ -1,105 +1,112 @@
-#include "arduino.h"
-#include "Bread.h"
+#include "Arduino.h"
+#include "BCom.h"
 
-
-void Bread::Bread(){
-	 if(Serial.available()>0){
-
+BFrameIn::printTo(Print& p)
+{
+  p.print("{Start:");
+  p.print(start,DEC);
+  p.print(",throttle:");
+  p.print(throttle,DEC);
+  p.print(",yaw:");
+  p.print(yaw,DEC);
+  p.print(",pitch:");
+  p.print(pitch,DEC);
+  p.print(",roll:");
+  p.print(roll,DEC);
+  p.print(",yAccel:");
+  p.print(yA,DEC);
+  p.print(",zAccel:");
+  p.print(zA,DEC);
+  p.print(",LED:");
+  p.print(LED,DEC);
+  p.print(",REC:");
+  p.print(REC,DEC);
+  p.print(",CheckSum:");
+  p.print(Ch,DEC);
+  p.print(",End:");
+  p.print(End,DEC);
+  p.print("}");
+}
+ 
+int BCom::read(BFrameIn *frame)
+{
+  int a = 0;
+  while(a<11)
+  {
+    if(available()>0)
+    {
       switch(a){
+        case 0:
+        frame->start = read();
+             break;
+
         case 1:
-        a++;
-        newFrame.start = Serial.read();
+        frame->throttle=read();
              break;
+
         case 2:
-         a++;
-        newFrame.throttle=Serial.read();
+        frame->yaw=read();
              break;
+
         case 3:
-        a++;
-        newFrame.yaw=Serial.read();
-             break;
+        frame->pitch=read();
+              break;
+
         case 4:
-        a++;
-        newFrame.pitch=Serial.read();
+        frame->roll=read();
               break;
+
         case 5:
-        a++;
-        newFrame.roll=Serial.read();
+        frame->yA=read();
               break;
+
         case 6:
-        a++;
-        newFrame.yA=Serial.read();
+        frame->zA=read();
               break;
+
         case 7:
-        a++;
-        newFrame.zA=Serial.read();
+        frame->LED=read();
               break;
+
         case 8:
-        a++;
-        newFrame.LED=Serial.read();
+        frame->REC=read();
               break;
+
         case 9:
-        a++;
-        newFrame.REC=Serial.read();
-        
+        frame->Ch=read();
               break;
+
         case 10:
-        a++;
-        newFrame.Ch=Serial.read();
-        
-              break;
-        case 11:
-        a=1;
-        newFrame.End=Serial.read();
-              break;
+        frame->End=read();
+        break;
 
       }
+      a++;
     }
- }
+  }
+}
  
- void Bread::save(){
- 	myframe.start = newframe->start;
- 	myframe.throttle = newframe->throttle;
- 	myframe.yaw = newframe->yaw;
- 	myframe.pitch = newframe->pitch;
- 	myframe.roll = newframe->roll;
- 	myframe.yA = newframe->yA;
- 	myframe.zA = newframe->zA;
- 	myframe.LED = newframe->LED;
- 	myframe.REC = newframe.REC;
- 	myframe.Ch = newframe->Ch;
- 	myframe.End = newframe->End;	
- }
- 
- void Bread::show(){
- 	   Serial.print("Start: ");
-   Serial.println(newFrame.start,DEC);
-   Serial.print("throttle: ");
-   Serial.println(newFrame.throttle,DEC);
-   Serial.print("yaw: ");
-   Serial.println(newFrame.yaw,DEC);
-   Serial.print("pitch: ");
-   Serial.println(newFrame.pitch,DEC);
-   Serial.print("roll: ");
-   Serial.println(newFrame.roll,DEC);
-   Serial.print("yAccelaration: ");
-   Serial.println(newFrame.yA,DEC);
-   Serial.print("zAccelaration: ");
-   Serial.println(newFrame.zA,DEC);
-   Serial.print("LED: ");
-   Serial.println(newFrame.LED,DEC);
-   if(newFrame.LED==1)
-        {
-            analogWrite(LED_PIN1,map(newFrame.throttle,0,100,0,255));
-        }
-   else if(newFrame.LED==0)
-        {
-            digitalWrite(LED_PIN1,LOW);
-        }
-   Serial.print("REC: ");
-   Serial.println(newFrame.REC,DEC);
-   Serial.print("CheckSum: ");
-   Serial.println(newFrame.Ch,DEC);
-   Serial.print("End: ");
-   Serial.println(newFrame.End,DEC);
- }
+int BCom::available(void)
+{
+  return sub_stream.available();
+}
+
+int BCom::peek(void)
+{
+  return sub_stream.peek();
+}
+
+int BCom::read(void)
+{
+  return sub_stream.read();
+}
+
+void BCom::flush(void)
+{
+  return sub_stream.flush();
+}
+
+size_t BCom::write(uint8_t c)
+{
+  return sub_stream.write(c);
+}
