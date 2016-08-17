@@ -11,7 +11,7 @@
 
 
 BFrameIn frame;
-BCom bluetooth(&Serial);
+BCom bluetooth(&Serial1);
 
 int pin_led = 13;
 
@@ -26,7 +26,7 @@ void setup() {
 
 void loop() {
 
-  BCom.read(&frame);
+  bluetooth.read(frame);
 
   if(frame.LED==1)
   {
