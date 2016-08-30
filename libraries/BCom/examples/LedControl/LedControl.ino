@@ -11,7 +11,7 @@
 
 
 BFrameIn frame;
-BCom bluetooth(&Serial1);
+BCom bluetooth(&Serial);
 
 int pin_led = 13;
 
