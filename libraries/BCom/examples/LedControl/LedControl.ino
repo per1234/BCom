@@ -19,9 +19,7 @@ int pin_led = 13;
 void setup() {
   // start serial port at 115200 bps:
   Serial.begin(115200);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
-  }
+  while (!Serial); // wait for serial port to connect. Needed for native USB port only
 }
 
 void loop() {
