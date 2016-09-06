@@ -56,7 +56,7 @@ class BCom: public Stream
   public:
     BCom(Stream *sub_stream);
 
-    void read(BFrameIn frame);
+    int read(BFrameIn& frame);
 
     // virtual functions from Stream class
     virtual int available(void);
